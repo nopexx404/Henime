@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Unlock Access</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+
+<style>
+body{
+  margin:0;
+  font-family:Poppins, sans-serif;
+  background:#f4f6f8;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  min-height:100vh;
+}
+
+.card{
+  background:#fff;
+  width:95%;
+  max-width:600px;
+  padding:35px 25px;
+  border-radius:20px;
+  box-shadow:0 20px 50px rgba(0,0,0,0.08);
+  text-align:center;
+}
+
+h1{
+  margin:0 0 10px;
+  font-size:32px;
+}
+
+.subtitle{
+  color:#777;
+  margin-bottom:30px;
+}
+
+.action{
+  background:linear-gradient(180deg,#07d36b,#03b45a);
+  color:#fff;
+  padding:16px;
+  border-radius:12px;
+  margin-bottom:18px;
+  cursor:pointer;
+  font-weight:600;
+  transition:0.2s;
+}
+
+.action:hover{
+  transform:translateY(-2px);
+}
+
+.action.done{
+  background:#ccc;
+  pointer-events:none;
+}
+
+.progress{
+  margin-top:20px;
+}
+
+.progress-bar{
+  width:100%;
+  height:12px;
+  background:#eee;
+  border-radius:10px;
+  overflow:hidden;
+  margin-top:8px;
+}
+
+.progress-fill{
+  height:100%;
+  width:0%;
+  background:linear-gradient(90deg,#18d36f,#07b25a);
+  transition:0.3s;
+}
+
+.final{
+  margin-top:25px;
+  padding:16px;
+  border-radius:12px;
+  background:#ccc;
+  color:#fff;
+  font-weight:700;
+  cursor:not-allowed;
+}
+
+.final.active{
+  background:linear-gradient(180deg,#07d36b,#03b45a);
+  cursor:pointer;
+}
+
+.ad-container{
+  display:none;
+  justify-content:center;
+  margin:25px 0;
+}
+</style>
+</head>
+
+<body>
+
+<div class="card">
+
+<h1>Unlock the full video experience.</h1>
+<p class="subtitle">If your click doesn't register, please click again.</p>
+
+<div class="action" data-index="0">Click, wait 10s, then return</div>
+<div class="action" data-index="1">Click, wait 10s, then return</div>
+<div class="action" data-index="2">Click, wait 10s, then return</div>
+
+<div class="progress">
+  Unlock Progress <span id="progressText">0/3</span>
+  <div class="progress-bar">
+    <div class="progress-fill" id="progressFill"></div>
+  </div>
+</div>
+
+<!-- AADS -->
+<div id="adUnit" class="ad-container">
+  <iframe
+    data-aa="2428200"
+    src="//ad.a-ads.com/2428200/?size=300x250"
+    style="border:0;width:300px;height:250px;overflow:hidden;">
+  </iframe>
+</div>
+
+<div id="finalBtn" class="final">Complete all steps to unlock</div>
+
+</div>
+
+<script>
+
+/* ---------- AUTO OPEN CHROME (BEST EFFORT) ---------- */
+window.addEventListener("load", function() {
+  const url = window.location.href;
+
+  function isAndroid(){ return /Android/i.test(navigator.userAgent); }
+  function isIOS(){ return /iPhone|iPad|iPod/i.test(navigator.userAgent); }
+
+  if(isAndroid()){
+    const noProto = url.replace(/^https?:\/\//,'');
+    window.location = 'intent://' + noProto + '#Intent;scheme=https;package=com.android.chrome;end';
+  }
+
+  if(isIOS()){
+    window.location = url.replace(/^https?:\/\//,'googlechromes://');
+  }
+});
+
+/* ---------- BUTTON LOGIC ---------- */
+
+const buttons = document.querySelectorAll(".action");
+const progressText = document.getElementById("progressText");
+const progressFill = document.getElementById("progressFill");
+const finalBtn = document.getElementById("finalBtn");
+const adUnit = document.getElementById("adUnit");
+
+let completed = 0;
+let adShown = false;
+
+buttons.forEach(btn=>{
+  btn.addEventListener("click", function(){
+
+    if(btn.classList.contains("done")) return;
+
+    if(!adShown){
+      adUnit.style.display="flex";
+      adShown=true;
+    }
+
+    let seconds = 10;
+    btn.innerText = "Waiting... 10s";
+    btn.style.pointerEvents="none";
+
+    const timer = setInterval(()=>{
+      seconds--;
+      btn.innerText = "Waiting... "+seconds+"s";
+
+      if(seconds<=0){
+        clearInterval(timer);
+        btn.innerText="✓ Completed!";
+        btn.classList.add("done");
+        completed++;
+        updateProgress();
+      }
+
+    },1000);
+
+  });
+});
+
+function updateProgress(){
+  progressText.innerText = completed + "/3";
+  progressFill.style.width = (completed/3)*100 + "%";
+
+  if(completed===3){
+    finalBtn.classList.add("active");
+    finalBtn.innerText="🎉 Click here to get all videos!";
+    finalBtn.style.cursor="pointer";
+
+    finalBtn.onclick=function(){
+      window.open("https://omg10.com/4/9150460","_blank");
+    }
+  }
+}
+
+</script>
+
+</body>
+</html>
